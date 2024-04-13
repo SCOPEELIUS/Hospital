@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hospital/subScreens/logInNurse.dart';
+import 'package:hospital/subScreens/logInDoctor.dart';
+import 'package:hospital/subScreens/logInReception.dart';
+import 'package:hospital/subScreens/signUp.dart';
 
 void main() {
   runApp(const MyApp());
@@ -114,7 +118,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   ),
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => DoctorLogIn()));
+                      },
                       child: const Text(
                         "AS A DOCTOR",
                         style: TextStyle(
@@ -155,7 +162,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   ),
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const NurseLogIn()));
+                      },
                       child: const Text(
                         "AS A NURSE",
                         style: TextStyle(
@@ -166,46 +176,98 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ],
             ),
-            Container(
-              alignment: Alignment.bottomCenter,
-              margin: const EdgeInsets.all(30),
-              height: size.height * 0.3,
-              width: size.width * 0.5,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/34818.jpg"),
-                  fit: BoxFit.cover,
-                  colorFilter:
-                      ColorFilter.mode(Colors.black12, BlendMode.darken),
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  margin: const EdgeInsets.all(30),
+                  height: size.height * 0.3,
+                  width: size.width * 0.4,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/34818.jpg"),
+                      fit: BoxFit.cover,
+                      colorFilter:
+                          ColorFilter.mode(Colors.black12, BlendMode.darken),
+                    ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(-2, -2),
+                          spreadRadius: -2,
+                          blurRadius: 10,
+                          color: Colors.black,
+                          blurStyle: BlurStyle.solid),
+                      BoxShadow(
+                          offset: Offset(2, 2),
+                          spreadRadius: -2,
+                          blurRadius: 10,
+                          color: Colors.black,
+                          blurStyle: BlurStyle.solid),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ReceptionLogIn()));
+                      },
+                      child: const Text(
+                        "AS A RECEPTIONIST",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                            fontSize: 18),
+                        textAlign: TextAlign.center,
+                      )),
                 ),
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(30),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                      offset: Offset(-2, -2),
-                      spreadRadius: -2,
-                      blurRadius: 10,
-                      color: Colors.black,
-                      blurStyle: BlurStyle.solid),
-                  BoxShadow(
-                      offset: Offset(2, 2),
-                      spreadRadius: -2,
-                      blurRadius: 10,
-                      color: Colors.black,
-                      blurStyle: BlurStyle.solid),
-                ],
-              ),
-              child: ElevatedButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "AS A RECEPTIONIST",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                        fontSize: 18),
-                  )),
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  margin: const EdgeInsets.all(8),
+                  height: size.height * 0.3,
+                  width: size.width * 0.4,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/doctor_consultation_03.jpg"),
+                      fit: BoxFit.cover,
+                      colorFilter:
+                          ColorFilter.mode(Colors.black12, BlendMode.darken),
+                    ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(-2, -2),
+                          spreadRadius: -2,
+                          blurRadius: 10,
+                          color: Colors.black,
+                          blurStyle: BlurStyle.solid),
+                      BoxShadow(
+                          offset: Offset(2, 2),
+                          spreadRadius: -2,
+                          blurRadius: 10,
+                          color: Colors.black,
+                          blurStyle: BlurStyle.solid),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const SignUp()));
+                      },
+                      child: const Text(
+                        "REGISTER",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                            fontSize: 18),
+                      )),
+                )
+              ],
             )
           ],
         ),
