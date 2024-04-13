@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hospital/screens/doctorScreens/doctorHome.dart';
+import 'package:hospital/screens/doctorScreens/doctorsMain.dart';
+import 'package:hospital/screens/nurseScreens/nurseHome.dart';
+import 'package:hospital/screens/nurseScreens/nursesMain.dart';
+import 'package:hospital/screens/receptionistScreens/receptionHome.dart';
+import 'package:hospital/screens/receptionistScreens/receptionMain.dart';
 
 Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
     TextEditingController email, TextEditingController passWord) {
@@ -109,6 +115,18 @@ Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Form submitted')),
                   );
+                  if (text == "DOCTOR") {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const DoctorsMain()));
+                  }
+                  if (text == "NURSE") {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const NurseMain()));
+                  }
+                  if (text == "RECEPTIONIST") {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const ReceptionMain()));
+                  }
                 }
               },
               child: const Text(
