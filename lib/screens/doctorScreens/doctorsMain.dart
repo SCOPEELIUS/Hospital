@@ -23,7 +23,6 @@ class _DoctorsMainState extends State<DoctorsMain>
   void initState() {
     _widgets
       ..add(const DoctorHome())
-      ..add(const Doctors())
       ..add(const DoctorNurses())
       ..add(const DoctorPatients());
     super.initState();
@@ -47,7 +46,7 @@ class _DoctorsMainState extends State<DoctorsMain>
         decoration: BoxDecoration(
           color: Colors.white.withAlpha(210),
           boxShadow: const [
-             BoxShadow(
+            BoxShadow(
                 offset: Offset(-2, 3),
                 color: Colors.grey,
                 blurRadius: 8,
@@ -60,10 +59,10 @@ class _DoctorsMainState extends State<DoctorsMain>
           rippleColor: Colors.grey[300]!,
           hoverColor: Colors.grey[100]!,
           gap: 8,
-          activeColor: Colors.green.shade900,
+          activeColor: Colors.deepPurple,
           iconSize: 24,
-          padding:const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-          duration:const Duration(milliseconds: 400),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          duration: const Duration(milliseconds: 400),
           tabBackgroundColor: Colors.grey[400]!,
           color: Colors.black,
           tabs: const [
@@ -72,17 +71,13 @@ class _DoctorsMainState extends State<DoctorsMain>
               text: "Home",
             ),
             GButton(
-              icon: Icons.compare_arrows_sharp,
-              text: "Doctors",
-            ),
-            GButton(
-              icon: Icons.settings,
+              icon: Icons.person,
               text: "Nurses",
             ),
             GButton(
-              icon: Icons.settings,
+              icon: Icons.bed,
               text: "Patients",
-            )
+            ),
           ],
         ),
       ),

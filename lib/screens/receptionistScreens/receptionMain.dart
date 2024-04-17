@@ -23,9 +23,9 @@ class _ReceptionMainState extends State<ReceptionMain>
   void initState() {
     _widgets
       ..add(const ReceptionHome())
+      ..add(const ReceptionPatients())
       ..add(const ReceptionDoctors())
-      ..add(const ReceptionNurses())
-      ..add(const ReceptionPatients());
+      ..add(const ReceptionNurses());
     super.initState();
 
     _currentWidget = _widgets[_currentPage];
@@ -45,13 +45,14 @@ class _ReceptionMainState extends State<ReceptionMain>
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white.withAlpha(210),
-          boxShadow: const [
+          color: Colors.white.withAlpha(110),
+          boxShadow: [
             BoxShadow(
-                offset: Offset(-2, 3),
-                color: Colors.grey,
-                blurRadius: 8,
-                spreadRadius: -2),
+                offset: Offset(0, 0),
+                spreadRadius: 0,
+                blurRadius: 15,
+                color: Colors.black45.withBlue(90),
+                blurStyle: BlurStyle.solid),
           ],
         ),
         child: GNav(
@@ -60,11 +61,11 @@ class _ReceptionMainState extends State<ReceptionMain>
           rippleColor: Colors.grey[300]!,
           hoverColor: Colors.grey[100]!,
           gap: 8,
-          activeColor: Colors.green.shade900,
+          activeColor: Colors.blue,
           iconSize: 24,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           duration: const Duration(milliseconds: 400),
-          tabBackgroundColor: Colors.grey[400]!,
+          tabBackgroundColor: Colors.white.withAlpha(100),
           color: Colors.black,
           tabs: const [
             GButton(
@@ -72,17 +73,17 @@ class _ReceptionMainState extends State<ReceptionMain>
               text: "Home",
             ),
             GButton(
-              icon: Icons.compare_arrows_sharp,
+              icon: Icons.bed,
+              text: "Patients",
+            ),
+            GButton(
+              icon: Icons.school,
               text: "Doctors",
             ),
             GButton(
-              icon: Icons.compare_arrows_sharp,
+              icon: Icons.person,
               text: "Nurses",
             ),
-            GButton(
-              icon: Icons.settings,
-              text: "Patients",
-            )
           ],
         ),
       ),

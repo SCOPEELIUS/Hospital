@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hospital/screens/doctorScreens/doctorHome.dart';
+import 'package:hospital/httpFuncts/userHttp.dart';
 import 'package:hospital/screens/doctorScreens/doctorsMain.dart';
-import 'package:hospital/screens/nurseScreens/nurseHome.dart';
 import 'package:hospital/screens/nurseScreens/nursesMain.dart';
-import 'package:hospital/screens/receptionistScreens/receptionHome.dart';
 import 'package:hospital/screens/receptionistScreens/receptionMain.dart';
 
 Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
@@ -151,6 +149,7 @@ Widget getSignUp(
     List<String> options,
     TextEditingController selectedOption,
     void Function(String) callback) {
+  var userHttp = UserHttp();
   return Container(
     padding: const EdgeInsets.all(16),
     width: MediaQuery.of(context).size.width * 0.85,
@@ -317,7 +316,9 @@ Widget getSignUp(
             }).toList(),
           ),
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                // var a = await userHttp.SetUser();
+                // print("Response is $a");
                 if (formKey.currentState!.validate()) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Form submitted')),
