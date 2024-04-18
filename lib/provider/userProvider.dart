@@ -10,7 +10,7 @@ class UserProvider extends ChangeNotifier {
   final userHttp = UserHttp();
   User user = User();
 
-  Future<void> signIn(String email, String password) async {
+  Future signIn(String email, String password) async {
     user.email = email;
     user.password = password;
     ApiResponse? resp = await userHttp.LogIn(user);

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hospital/components/indicators.dart';
 import 'package:hospital/components/navigators.dart';
 import 'package:hospital/components/textFormFields.dart';
-import 'package:hospital/httpFuncts/userHttp.dart';
 import 'package:hospital/models/accountTypes.dart';
 import 'package:hospital/models/userModel.dart';
 import 'package:hospital/provider/userProvider.dart';
@@ -55,25 +54,33 @@ Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
           ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  showLoadingDialog(context);
-                  var a = await userProvider.signIn(email.text, passWord.text);
-                  usersProvider.getAllUsers();
-                  Navigator.of(context).pop();
-                  if (userProvider.logIn) {
-                    showCustomSnackBar(context, "Welcome ");
-                    switch (userProvider.user.accountType) {
-                      case AccountType.doctor:
-                        simpleNavigator(context, const DoctorsMain());
-                        break;
-                      case AccountType.nurse:
-                        simpleNavigator(context, const NurseMain());
-                        break;
-                      case AccountType.reception:
-                        simpleNavigator(context, const ReceptionMain());
-                        break;
-                    }
+                  // showLoadingDialog(context);
+                  // userProvider.signIn(email.text, passWord.text);
+                  // usersProvider.getAllUsers();
+                  // Navigator.of(context).pop();
+                  // if (userProvider.logIn) {
+                  //   showCustomSnackBar(context, "Welcome ");
+                  //   switch (userProvider.user.accountType) {
+                  //     case AccountType.doctor:
+                  //       simpleNavigator(context, const DoctorsMain());
+                  //       break;
+                  //     case AccountType.nurse:
+                  //       simpleNavigator(context, const NurseMain());
+                  //       break;
+                  //     case AccountType.reception:
+                  //       simpleNavigator(context, const ReceptionMain());
+                  //       break;
+                  //   }
+                  // } else {
+                  //   showCustomSnackBar(context, "Failed to LogIn");
+                  // }
+
+                  if (text == "NURSE") {
+                    simpleNavigator(context, const NurseMain());
+                  } else if (text == "DOCTOR") {
+                    simpleNavigator(context, const DoctorsMain());
                   } else {
-                    showCustomSnackBar(context, "Failed to LogIn");
+                    simpleNavigator(context, const ReceptionMain());
                   }
                 }
               },

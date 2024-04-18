@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hospital/components/componets.dart';
 import 'package:hospital/components/nfcComponents.dart';
 import 'package:hospital/subScreens/patientAdmition.dart';
 
@@ -40,7 +41,7 @@ class _ReceptionHomeState extends State<ReceptionHome> {
         elevation: 10,
         shadowColor: Colors.black,
         title: Text(
-          "RECEPTION",
+          "RECEPTIONIST",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 28,
@@ -76,7 +77,22 @@ class _ReceptionHomeState extends State<ReceptionHome> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: size.height * 0.09),
+              customContainer(Text(
+                "Elius Faustine",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 28,
+                    color: Colors.blue.shade800),
+              )),
+              customContainer(
+                Column(
+                  children: [
+                    rowData("NUMBER OF PATIENTS", "20"),
+                    rowData("NUMBER OF DOCTORS", "120"),
+                    rowData("NUMBER OF NURSES", "100"),
+                  ],
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -84,7 +100,7 @@ class _ReceptionHomeState extends State<ReceptionHome> {
                   getNfcReader(context, size, "ERASE CARD", functionCallback),
                 ],
               ),
-              SizedBox(height: size.height * 0.3),
+              SizedBox(height: size.height * 0.05),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       enableFeedback: true,

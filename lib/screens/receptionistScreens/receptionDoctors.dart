@@ -42,7 +42,9 @@ class _ReceptionDoctorsState extends State<ReceptionDoctors> {
         height: size.height,
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: usersProvider.users.users?.length,
+          itemCount:  usersProvider.users.users == null
+              ? 0
+              : usersProvider.users.users!.length,
           itemBuilder: (context, value) => (usersProvider
                           .users.users?[value].accountType ==
                       AccountType.doctor) ||

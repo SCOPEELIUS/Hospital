@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hospital/components/componets.dart';
 import 'package:hospital/components/nfcComponents.dart';
 
 class NurseHome extends StatefulWidget {
@@ -73,30 +74,15 @@ class _NurseHomeState extends State<NurseHome> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                        offset: Offset(-2, -2),
-                        spreadRadius: -2,
-                        blurRadius: 10,
-                        color: Colors.black,
-                        blurStyle: BlurStyle.solid),
-                    BoxShadow(
-                        offset: Offset(2, 2),
-                        spreadRadius: -2,
-                        blurRadius: 10,
-                        color: Colors.black,
-                        blurStyle: BlurStyle.solid),
-                  ],
-                ),
-                child: Column(
+              customContainer(Text(
+                "Elius Faustine",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 28,
+                    color: Colors.blue.shade800),
+              )),
+              customContainer(
+                Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

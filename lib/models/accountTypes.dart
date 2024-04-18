@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class AccountType {
   static const String doctor = 'DOCTOR';
   static const String nurse = 'NURSE';

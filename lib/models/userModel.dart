@@ -1,12 +1,14 @@
 class User {
-   String? firstName;
-   String? lastName;
-   String? email;
-   String? password;
-   String? speciality;
-   String? accountType;
+  String? id;
+  String? firstName;
+  String? lastName;
+  String? email;
+  String? password;
+  String? speciality;
+  String? accountType;
 
   User({
+    this.id,
     this.firstName,
     this.lastName,
     this.email,
@@ -16,6 +18,7 @@ class User {
   });
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['_id'],
       firstName: json['firstName'] ?? "",
       lastName: json['lastName'] ?? "",
       email: json['email'] ?? "",
@@ -27,6 +30,7 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
+      '_id': id,
       'firstName': firstName,
       'lastName': lastName,
       'email': email,

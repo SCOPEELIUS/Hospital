@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hospital/provider/patientsProvider.dart';
+import 'package:provider/provider.dart';
 
 import '../../subScreens/patientDetails.dart';
 
@@ -13,6 +15,8 @@ class _NursePatientsState extends State<NursePatients> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var patientsProvider =
+        Provider.of<PatientsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -39,7 +43,9 @@ class _NursePatientsState extends State<NursePatients> {
         height: size.height,
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: 2,
+          itemCount: patientsProvider.patients.patients == null
+              ? 0
+              : patientsProvider.patients.patients!.length,
           itemBuilder: (context, value) => Container(
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(16),
