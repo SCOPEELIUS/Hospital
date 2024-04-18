@@ -1,8 +1,6 @@
-
-
 class ApiResponse {
   final bool success;
-  final String body;
+  final dynamic body;
   final bool error;
 
   ApiResponse({

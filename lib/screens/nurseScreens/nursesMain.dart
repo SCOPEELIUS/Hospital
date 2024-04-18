@@ -11,8 +11,7 @@ class NurseMain extends StatefulWidget {
   State<NurseMain> createState() => _NurseMainState();
 }
 
-class _NurseMainState extends State<NurseMain>
-    with TickerProviderStateMixin {
+class _NurseMainState extends State<NurseMain> with TickerProviderStateMixin {
   bool theme = false;
   late List<Widget> _widgets = [];
   int _currentPage = 0;
@@ -39,7 +38,10 @@ class _NurseMainState extends State<NurseMain>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentWidget,
+      body: PopScope(
+        canPop: false,
+        child: _currentWidget,
+      ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(

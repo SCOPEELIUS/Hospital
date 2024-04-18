@@ -1,11 +1,23 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:hospital/components/indicators.dart';
+import 'package:hospital/components/navigators.dart';
+import 'package:hospital/components/textFormFields.dart';
 import 'package:hospital/httpFuncts/userHttp.dart';
+import 'package:hospital/models/accountTypes.dart';
+import 'package:hospital/models/userModel.dart';
+import 'package:hospital/provider/userProvider.dart';
+import 'package:hospital/provider/usersProvider.dart';
 import 'package:hospital/screens/doctorScreens/doctorsMain.dart';
 import 'package:hospital/screens/nurseScreens/nursesMain.dart';
 import 'package:hospital/screens/receptionistScreens/receptionMain.dart';
+import 'package:provider/provider.dart';
 
 Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
     TextEditingController email, TextEditingController passWord) {
+  var userProvider = Provider.of<UserProvider>(context, listen: false);
+  var usersProvider = Provider.of<UsersProvider>(context, listen: false);
   return Container(
     padding: const EdgeInsets.all(16),
     width: MediaQuery.of(context).size.width * 0.85,
@@ -32,98 +44,36 @@ Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.04,
           ),
-          TextFormField(
-            cursorColor: Colors.blue,
-            controller: email,
-            keyboardType: TextInputType.emailAddress,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.blue.withGreen(100),
-            ),
-            decoration: const InputDecoration(
-              labelStyle: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 1),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              labelText: 'Email',
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 3),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-            ),
-            validator: (value) {
-              RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-              if (value!.isEmpty) {
-                return 'Please enter your email';
-              } else if (!emailRegex.hasMatch(value)) {
-                return 'Please enter a valid email';
-              } else {
-                return null;
-              }
-              // Add more email validation logic if needed
-            },
-          ),
+          getEmailForm(email),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.04,
           ),
-          TextFormField(
-            cursorColor: Colors.blue,
-            controller: passWord,
-            keyboardType: TextInputType.text,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.blue.withGreen(100),
-            ),
-            decoration: const InputDecoration(
-              labelStyle: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 1),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              labelText: 'Password',
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 3),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter your password';
-              } else if (value.length < 6) {
-                return 'Password must have atleast six characters ';
-              } else {
-                return null;
-              }
-              // Add more email validation logic if needed
-            },
-          ),
+          getPasswordField(passWord),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.04,
           ),
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Form submitted')),
-                  );
-                  if (text == "DOCTOR") {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const DoctorsMain()));
-                  }
-                  if (text == "NURSE") {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const NurseMain()));
-                  }
-                  if (text == "RECEPTIONIST") {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ReceptionMain()));
+                  showLoadingDialog(context);
+                  var a = await userProvider.signIn(email.text, passWord.text);
+                  usersProvider.getAllUsers();
+                  Navigator.of(context).pop();
+                  if (userProvider.logIn) {
+                    showCustomSnackBar(context, "Welcome ");
+                    switch (userProvider.user.accountType) {
+                      case AccountType.doctor:
+                        simpleNavigator(context, const DoctorsMain());
+                        break;
+                      case AccountType.nurse:
+                        simpleNavigator(context, const NurseMain());
+                        break;
+                      case AccountType.reception:
+                        simpleNavigator(context, const ReceptionMain());
+                        break;
+                    }
+                  } else {
+                    showCustomSnackBar(context, "Failed to LogIn");
                   }
                 }
               },
@@ -143,13 +93,15 @@ Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
 Widget getSignUp(
     BuildContext context,
     GlobalKey<FormState> formKey,
+    TextEditingController firstName,
+    TextEditingController secondName,
+    TextEditingController profession,
     TextEditingController email,
     TextEditingController passWord,
-    TextEditingController passWord2,
     List<String> options,
     TextEditingController selectedOption,
     void Function(String) callback) {
-  var userHttp = UserHttp();
+  var userProvider = Provider.of<UserProvider>(context, listen: false);
   return Container(
     padding: const EdgeInsets.all(16),
     width: MediaQuery.of(context).size.width * 0.85,
@@ -173,123 +125,17 @@ Widget getSignUp(
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.04,
-          ),
-          TextFormField(
-            cursorColor: Colors.blue,
-            controller: email,
-            keyboardType: TextInputType.emailAddress,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.blue.withGreen(100),
-            ),
-            decoration: const InputDecoration(
-              labelStyle: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 1),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              labelText: 'Email',
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 3),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-            ),
-            validator: (value) {
-              RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-              if (value!.isEmpty) {
-                return 'Please enter your email';
-              } else if (!emailRegex.hasMatch(value)) {
-                return 'Please enter a valid email';
-              } else {
-                return null;
-              }
-              // Add more email validation logic if needed
-            },
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.04,
-          ),
-          TextFormField(
-            cursorColor: Colors.blue,
-            controller: passWord,
-            keyboardType: TextInputType.text,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.blue.withGreen(100),
-            ),
-            decoration: const InputDecoration(
-              labelStyle: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 1),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              labelText: 'Password',
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 3),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter your password';
-              } else if (value.length < 6) {
-                return 'Password must have atleast six characters ';
-              } else {
-                return null;
-              }
-              // Add more email validation logic if needed
-            },
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.04,
-          ),
-          TextFormField(
-            cursorColor: Colors.blue,
-            controller: passWord2,
-            keyboardType: TextInputType.text,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.blue.withGreen(100),
-            ),
-            decoration: const InputDecoration(
-              labelStyle: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 1),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              labelText: 'Repeat Password',
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 3),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter your password';
-              } else if (value.length < 6) {
-                return 'Password must have atleast six characters ';
-              } else if (passWord.text != passWord2.text) {
-                return 'Password must match ';
-              } else {
-                return null;
-              }
-              // Add more email validation logic if needed
-            },
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.04,
-          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+          getTextForm(firstName, "First Name"),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+          getTextForm(secondName, "Second Name"),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+          getTextForm(profession, "Profession"),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+          getEmailForm(email),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+          getPasswordField(passWord),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
           DropdownButton<String>(
             iconEnabledColor: Colors.deepPurple,
             iconSize: 40,
@@ -317,12 +163,35 @@ Widget getSignUp(
           ),
           ElevatedButton(
               onPressed: () async {
-                // var a = await userHttp.SetUser();
-                // print("Response is $a");
                 if (formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Form submitted')),
+                  var newUser = User(
+                    firstName: firstName.text,
+                    lastName: secondName.text,
+                    email: email.text,
+                    password: passWord.text,
+                    speciality: profession.text,
+                    accountType: selectedOption.text,
                   );
+                  showLoadingDialog(context);
+                  var result = await userProvider.signUp(newUser);
+                  Navigator.of(context).pop();
+                  if (result) {
+                    print(userProvider.user.accountType);
+                    switch (userProvider.user.accountType) {
+                      case AccountType.doctor:
+                        simpleNavigator(context, const DoctorsMain());
+                        break;
+                      case AccountType.nurse:
+                        simpleNavigator(context, const NurseMain());
+                        break;
+                      case AccountType.reception:
+                        simpleNavigator(context, const ReceptionMain());
+                        break;
+                    }
+                    showCustomSnackBar(context, "Welcome");
+                  } else {
+                    showCustomSnackBar(context, "Failed To Register");
+                  }
                 }
               },
               child: const Text(

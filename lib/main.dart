@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hospital/provider/userProvider.dart';
+import 'package:hospital/provider/usersProvider.dart';
 import 'package:hospital/subScreens/logInNurse.dart';
 import 'package:hospital/subScreens/logInDoctor.dart';
 import 'package:hospital/subScreens/logInReception.dart';
 import 'package:hospital/subScreens/signUp.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,13 +17,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => UserProvider()),
+          ChangeNotifierProvider(create: (context) => UsersProvider()),
+        ],
+        builder: (context, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              useMaterial3: true,
+            ),
+            home: const MyHomePage(),
+          );
+        });
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hospital/components/nfcComponents.dart';
 
 class NurseHome extends StatefulWidget {
@@ -36,12 +37,24 @@ class _NurseHomeState extends State<NurseHome> {
         elevation: 10,
         shadowColor: Colors.black,
         title: Text(
-          "DOCTOR",
+          "NURSE",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 28,
               color: Colors.blue.shade800),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              icon: const Icon(
+                weight: 45,
+                Icons.exit_to_app,
+                size: 28,
+                color: Colors.deepPurple,
+              ))
+        ],
       ),
       body: SafeArea(
           child: SingleChildScrollView(

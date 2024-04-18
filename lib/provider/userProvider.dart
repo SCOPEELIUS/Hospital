@@ -10,23 +10,31 @@ class UserProvider extends ChangeNotifier {
   final userHttp = UserHttp();
   User user = User();
 
-  Future<void> signIn() async {
+  Future<void> signIn(String email, String password) async {
+    user.email = email;
+    user.password = password;
     ApiResponse? resp = await userHttp.LogIn(user);
     if (resp != null && resp.success) {
-      user = User.fromJson(jsonDecode(resp.body));
+      user = User.fromJson(resp.body);
       logIn = true;
       notifyListeners();
     }
   }
 
-  Future<bool> signUp() async {
-    var resp = await userHttp.CreateUser(user);
+  Future<bool> signUp(User newUser) async {
+    user = newUser;
+    var resp = await userHttp.createUser(user);
     if (resp) {
       logIn = true;
     } else {
-      logIn = true;
+      logIn = false;
     }
     notifyListeners();
     return logIn;
+  }
+
+  void setUser(User newUser) {
+    user = newUser;
+    notifyListeners();
   }
 }

@@ -13,7 +13,7 @@ Map<String, String> headers = {
 class UserHttp {
   var Client = http.Client();
 
-  Future<bool> CreateUser(User user) async {
+  Future<bool> createUser(User user) async {
     var body = jsonEncode(user.toJson());
     print(body);
     var url = Uri.parse("${baseUrl}register");
@@ -33,17 +33,17 @@ class UserHttp {
     print(body);
     var url = Uri.parse("${baseUrl}login");
     var response = await Client.post(url, headers: headers, body: body);
-
+    print(response.body);
     if (response.statusCode == 200) {
-      print(response.body);
       var resp = ApiResponse.fromJson(jsonDecode(response.body));
       return resp;
     } else {
+      print("Failed");
       return null;
     }
   }
 
-  Future<ApiResponse?> GetAll() async{
+  Future<ApiResponse?> GetAll() async {
     var url = Uri.parse("${baseUrl}all");
     var response = await Client.get(url, headers: headers);
     if (response.statusCode == 200) {

@@ -13,8 +13,9 @@ class UsersProvider extends ChangeNotifier {
 
   Future getAllUsers() async {
     ApiResponse? resp = await userHttp.GetAll();
+    print(resp?.body ?? "");
     if (resp != null && resp.success) {
-      users = Users.fromJsonList(jsonDecode(resp.body));
+      users = Users.fromJsonList(resp.body);
       available = true;
       notifyListeners();
     }

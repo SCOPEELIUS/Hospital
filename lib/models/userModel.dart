@@ -1,10 +1,10 @@
 class User {
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final String? password;
-  final String? speciality;
-  final String? accountType;
+   String? firstName;
+   String? lastName;
+   String? email;
+   String? password;
+   String? speciality;
+   String? accountType;
 
   User({
     this.firstName,

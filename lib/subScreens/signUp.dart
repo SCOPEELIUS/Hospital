@@ -10,7 +10,9 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final _passWord = TextEditingController();
-  final _passWord2 = TextEditingController();
+  final _firstName = TextEditingController();
+  final _secondName = TextEditingController();
+  final _profession = TextEditingController();
   final _email = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   List<String> options = ['DOCTOR', 'NURSE', 'RECEPTIONIST'];
@@ -46,8 +48,18 @@ class _SignUpState extends State<SignUp> {
             ),
             color: Colors.white,
           ),
-          child: getSignUp(context, _formKey, _email, _passWord, _passWord2,
-              options, selectedOption, changeDropDown),
+          child: getSignUp(
+            context,
+            _formKey,
+            _firstName,
+            _secondName,
+            _profession,
+            _email,
+            _passWord,
+            options,
+            selectedOption,
+            changeDropDown,
+          ),
         ),
       ),
     );

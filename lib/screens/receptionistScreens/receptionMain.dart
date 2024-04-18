@@ -15,7 +15,7 @@ class ReceptionMain extends StatefulWidget {
 class _ReceptionMainState extends State<ReceptionMain>
     with TickerProviderStateMixin {
   bool theme = false;
-  late List<Widget> _widgets = [];
+  late final List<Widget> _widgets = [];
   int _currentPage = 0;
   late Widget _currentWidget;
 
@@ -41,14 +41,17 @@ class _ReceptionMainState extends State<ReceptionMain>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentWidget,
+      body: PopScope(
+        canPop: false,
+        child: _currentWidget,
+      ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white.withAlpha(110),
           boxShadow: [
             BoxShadow(
-                offset: Offset(0, 0),
+                offset: const Offset(0, 0),
                 spreadRadius: 0,
                 blurRadius: 15,
                 color: Colors.black45.withBlue(90),

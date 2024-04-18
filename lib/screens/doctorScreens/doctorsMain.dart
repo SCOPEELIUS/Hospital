@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hospital/screens/doctorScreens/doctorHome.dart';
 import 'package:hospital/screens/doctorScreens/doctorNurses.dart';
 import 'package:hospital/screens/doctorScreens/doctorPatients.dart';
-import 'package:hospital/screens/doctorScreens/doctors.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class DoctorsMain extends StatefulWidget {
@@ -40,7 +39,10 @@ class _DoctorsMainState extends State<DoctorsMain>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentWidget,
+      body: PopScope(
+        canPop: false,
+        child: _currentWidget,
+      ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
