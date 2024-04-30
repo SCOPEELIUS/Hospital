@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hospital/provider/doctorsProvider.dart';
+import 'package:hospital/provider/networkProvider.dart';
 import 'package:hospital/provider/patientProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
 import 'package:hospital/provider/userProvider.dart';
-import 'package:hospital/provider/usersProvider.dart';
+import 'package:hospital/provider/nursesProvider.dart';
+import 'package:hospital/provider/wardsProvider.dart';
 import 'package:hospital/subScreens/logInNurse.dart';
 import 'package:hospital/subScreens/logInDoctor.dart';
 import 'package:hospital/subScreens/logInReception.dart';
@@ -22,9 +25,12 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => UserProvider()),
-          ChangeNotifierProvider(create: (context) => UsersProvider()),
+          ChangeNotifierProvider(create: (context) => NursesProvider()),
           ChangeNotifierProvider(create: (context) => PatientsProvider()),
           ChangeNotifierProvider(create: (context) => PatientProvider()),
+          ChangeNotifierProvider(create: (context) => DoctorsProvider()),
+          ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
+          ChangeNotifierProvider(create: (context) => WardProvider()),
         ],
         builder: (context, child) {
           return MaterialApp(
@@ -49,6 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var conn = Provider.of<ConnectivityProvider>(context, listen: false);
+    conn.start(context);
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hospital/models/accountTypes.dart';
-import 'package:hospital/provider/usersProvider.dart';
+import 'package:hospital/provider/nursesProvider.dart';
 import 'package:provider/provider.dart';
 
 class ReceptionNurses extends StatefulWidget {
@@ -14,7 +14,7 @@ class ReceptionNurses extends StatefulWidget {
 class _ReceptionNursesState extends State<ReceptionNurses> {
   @override
   Widget build(BuildContext context) {
-    var usersProvider = Provider.of<UsersProvider>(context, listen: false);
+    var usersProvider = Provider.of<NursesProvider>(context, listen: true);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -42,52 +42,47 @@ class _ReceptionNursesState extends State<ReceptionNurses> {
         height: size.height,
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: usersProvider.users.users == null
+          itemCount: usersProvider.nurses.users == null
               ? 0
-              : usersProvider.users.users!.length,
-          itemBuilder: (context, value) =>
-              (usersProvider.users.users?[value].accountType ==
-                          AccountType.nurse) ||
-                      (usersProvider.users.users?[value].accountType == "Nurse")
-                  ? Container(
-                      margin: const EdgeInsets.all(20),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(30),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(-2, -2),
-                              spreadRadius: -2,
-                              blurRadius: 3,
-                              color: Colors.black,
-                              blurStyle: BlurStyle.solid),
-                          BoxShadow(
-                              offset: Offset(2, 2),
-                              spreadRadius: -2,
-                              blurRadius: 3,
-                              color: Colors.black,
-                              blurStyle: BlurStyle.solid),
-                        ],
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          usersProvider.users.users?[value].firstName ?? "",
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          usersProvider.users.users?[value].speciality ?? "",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        leading: const CircleAvatar(
-                          backgroundImage: AssetImage(
-                              "assets/0684456b-aa2b-4631-86f7-93ceaf33303c.jpg"),
-                        ),
-                      ),
-                    )
-                  : Container(),
+              : usersProvider.nurses.users!.length,
+          itemBuilder: (context, value) => Container(
+            margin: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(30),
+              ),
+              boxShadow: [
+                BoxShadow(
+                    offset: Offset(-2, -2),
+                    spreadRadius: -2,
+                    blurRadius: 3,
+                    color: Colors.black,
+                    blurStyle: BlurStyle.solid),
+                BoxShadow(
+                    offset: Offset(2, 2),
+                    spreadRadius: -2,
+                    blurRadius: 3,
+                    color: Colors.black,
+                    blurStyle: BlurStyle.solid),
+              ],
+            ),
+            child: ListTile(
+              title: Text(
+                usersProvider.nurses.users?[value].firstName ?? "",
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                usersProvider.nurses.users?[value].speciality ?? "",
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              leading: const CircleAvatar(
+                backgroundImage: AssetImage(
+                    "assets/0684456b-aa2b-4631-86f7-93ceaf33303c.jpg"),
+              ),
+            ),
+          ),
         ),
       ),
     );

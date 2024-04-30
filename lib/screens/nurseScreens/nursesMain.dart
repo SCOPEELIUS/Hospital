@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:hospital/provider/doctorsProvider.dart';
+import 'package:hospital/provider/networkProvider.dart';
+import 'package:hospital/provider/nursesProvider.dart';
+import 'package:hospital/provider/patientsProvider.dart';
+import 'package:hospital/provider/wardsProvider.dart';
 import 'package:hospital/screens/nurseScreens/nurseDoctors.dart';
 import 'package:hospital/screens/nurseScreens/nurseHome.dart';
 import 'package:hospital/screens/nurseScreens/nursePatients.dart';
+import 'package:provider/provider.dart';
 
 class NurseMain extends StatefulWidget {
   const NurseMain({super.key});
@@ -13,9 +19,34 @@ class NurseMain extends StatefulWidget {
 
 class _NurseMainState extends State<NurseMain> with TickerProviderStateMixin {
   bool theme = false;
-  late List<Widget> _widgets = [];
+  bool inits = false;
+  late final List<Widget> _widgets = [];
   int _currentPage = 0;
   late Widget _currentWidget;
+  Future<void> loadData() async {
+    var conn = Provider.of<ConnectivityProvider>(context, listen: true);
+    conn.start(context);
+    if (conn.status == ConnectivityStatus.online) {
+      var ward = Provider.of<WardProvider>(context, listen: true);
+      var nursesProvider = Provider.of<NursesProvider>(context, listen: true);
+      var doctorsProvider = Provider.of<DoctorsProvider>(context, listen: true);
+      var patientsProvider =
+          Provider.of<PatientsProvider>(context, listen: true);
+      await patientsProvider.getAllPatients();
+      await doctorsProvider.getAllDoctors();
+      await nursesProvider.getAllNurses();
+      await ward.getAllWards();
+      inits = false;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (inits) {
+      loadData();
+    }
+  }
 
   @override
   void initState() {
@@ -24,8 +55,8 @@ class _NurseMainState extends State<NurseMain> with TickerProviderStateMixin {
       ..add(const NurseDoctors())
       ..add(const NursePatients());
     super.initState();
-
     _currentWidget = _widgets[_currentPage];
+    inits = true;
   }
 
   void changePage(int value) {
@@ -37,6 +68,8 @@ class _NurseMainState extends State<NurseMain> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var conn = Provider.of<ConnectivityProvider>(context, listen: false);
+    conn.start(context);
     return Scaffold(
       body: PopScope(
         canPop: false,
@@ -72,11 +105,11 @@ class _NurseMainState extends State<NurseMain> with TickerProviderStateMixin {
               text: "Home",
             ),
             GButton(
-              icon: Icons.compare_arrows_sharp,
+              icon: Icons.school,
               text: "Doctors",
             ),
             GButton(
-              icon: Icons.settings,
+              icon: Icons.bed,
               text: "Patients",
             )
           ],

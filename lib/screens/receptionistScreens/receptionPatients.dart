@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hospital/components/indicators.dart';
 import 'package:hospital/provider/patientProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
 import 'package:hospital/subScreens/patientDetails.dart';
@@ -16,8 +17,8 @@ class _ReceptionPatientsState extends State<ReceptionPatients> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    var patientsProvider =
-        Provider.of<PatientsProvider>(context, listen: false);
+    var patientsProvider = Provider.of<PatientsProvider>(context, listen: true);
+    var patientProvider = Provider.of<PatientProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -74,7 +75,7 @@ class _ReceptionPatientsState extends State<ReceptionPatients> {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundImage: AssetImage(
                           "assets/0684456b-aa2b-4631-86f7-93ceaf33303c.jpg"),
                     ),
@@ -84,11 +85,16 @@ class _ReceptionPatientsState extends State<ReceptionPatients> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Patient Name",
-                            style: TextStyle(
+                        Text(
+                            patientsProvider
+                                    .patients.patients?[value].firstName ??
+                                "",
+                            style: const TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold)),
-                        Text("0746709189",
-                            style: TextStyle(
+                        Text(
+                            patientsProvider.patients.patients?[value].carId ??
+                                "",
+                            style: const TextStyle(
                               fontSize: 18,
                             ))
                       ],
@@ -100,6 +106,8 @@ class _ReceptionPatientsState extends State<ReceptionPatients> {
                   children: [
                     TextButton(
                       onPressed: () {
+                        patientProvider.setPatient(
+                            patientsProvider.patients.patients![value]);
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const Patient()));
                       },
@@ -110,14 +118,18 @@ class _ReceptionPatientsState extends State<ReceptionPatients> {
                     ),
                     TextButton(
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Re-assign Doctor",
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
-                      child: Text(
+                      onPressed: () {
+                        patientsProvider.removePatientWithNumber(value);
+                        showCustomSnackBar(context, "Patient reliesed");
+                        setState(() {});
+                      },
+                      child: const Text(
                         "Reliese",
                         style: TextStyle(fontSize: 18),
                       ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hospital/components/navigators.dart';
+import 'package:hospital/provider/patientProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
 import 'package:hospital/subScreens/patientDetails.dart';
+import 'package:hospital/subScreens/patientDetailsChange.dart';
 import 'package:provider/provider.dart';
 
 class DoctorPatients extends StatefulWidget {
@@ -13,8 +16,9 @@ class DoctorPatients extends StatefulWidget {
 class _DoctorPatientsState extends State<DoctorPatients> {
   @override
   Widget build(BuildContext context) {
+    var patientProvider = Provider.of<PatientProvider>(context, listen: false);
     var patientsProvider =
-        Provider.of<PatientsProvider>(context, listen: false);
+        Provider.of<PatientsProvider>(context, listen: true);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -79,14 +83,19 @@ class _DoctorPatientsState extends State<DoctorPatients> {
                     SizedBox(
                       width: size.height * 0.01,
                     ),
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Patient Name",
-                            style: TextStyle(
+                        Text(
+                            patientsProvider
+                                    .patients.patients![value].firstName ??
+                                "",
+                            style: const TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold)),
-                        Text("0746709189",
-                            style: TextStyle(
+                        Text(
+                            patientsProvider.patients.patients![value].carId ??
+                                "",
+                            style: const TextStyle(
                               fontSize: 18,
                             ))
                       ],
@@ -107,19 +116,20 @@ class _DoctorPatientsState extends State<DoctorPatients> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+
+                            if (patientsProvider.patients.patients != null) {
+                          patientProvider.setPatient(
+                              patientsProvider.patients.patients![value]);
+                          simpleNavigator(context, const PatientChaneDetails());
+                        }
+                      },
                       child: const Text(
-                        "Re-assign Doctor",
+                        "Update Details",
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "Reliese",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
+               
                   ],
                 )
               ],

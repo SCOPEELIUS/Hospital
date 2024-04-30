@@ -27,7 +27,7 @@ class UserHttp {
     }
   }
 
-  Future<ApiResponse?> LogIn(User user) async {
+  Future<ApiResponse?> logIn(User user) async {
     var body = jsonEncode(user.toJson());
     print(body);
     var url = Uri.parse("${baseUrl}login");
@@ -42,8 +42,32 @@ class UserHttp {
     }
   }
 
-  Future<ApiResponse?> GetAll() async {
+  Future<ApiResponse?> getAll() async {
     var url = Uri.parse("${baseUrl}all");
+    var response = await Client.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      print(response.body);
+      var resp = ApiResponse.fromJson(jsonDecode(response.body));
+      return resp;
+    } else {
+      return null;
+    }
+  }
+
+  Future<ApiResponse?> getAllNurses() async {
+    var url = Uri.parse("${baseUrl}specific/Nurse");
+    var response = await Client.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      print(response.body);
+      var resp = ApiResponse.fromJson(jsonDecode(response.body));
+      return resp;
+    } else {
+      return null;
+    }
+  }
+
+  Future<ApiResponse?> getAllDoctors() async {
+    var url = Uri.parse("${baseUrl}specific/Doctor");
     var response = await Client.get(url, headers: headers);
     if (response.statusCode == 200) {
       print(response.body);

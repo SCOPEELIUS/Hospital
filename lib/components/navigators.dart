@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hospital/components/indicators.dart';
 
 void simpleNavigator(BuildContext context, Widget page) {
+   showCustomSnackBar(context, "Welcome");
   Navigator.push(
     context,
     PageRouteBuilder(

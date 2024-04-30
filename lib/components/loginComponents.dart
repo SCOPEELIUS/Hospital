@@ -6,8 +6,11 @@ import 'package:hospital/components/navigators.dart';
 import 'package:hospital/components/textFormFields.dart';
 import 'package:hospital/models/accountTypes.dart';
 import 'package:hospital/models/userModel.dart';
+import 'package:hospital/provider/doctorsProvider.dart';
+import 'package:hospital/provider/networkProvider.dart';
+import 'package:hospital/provider/patientsProvider.dart';
 import 'package:hospital/provider/userProvider.dart';
-import 'package:hospital/provider/usersProvider.dart';
+import 'package:hospital/provider/nursesProvider.dart';
 import 'package:hospital/screens/doctorScreens/doctorsMain.dart';
 import 'package:hospital/screens/nurseScreens/nursesMain.dart';
 import 'package:hospital/screens/receptionistScreens/receptionMain.dart';
@@ -15,8 +18,9 @@ import 'package:provider/provider.dart';
 
 Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
     TextEditingController email, TextEditingController passWord) {
+  var conn = Provider.of<ConnectivityProvider>(context, listen: false);
+  conn.start(context);
   var userProvider = Provider.of<UserProvider>(context, listen: false);
-  var usersProvider = Provider.of<UsersProvider>(context, listen: false);
   return Container(
     padding: const EdgeInsets.all(16),
     width: MediaQuery.of(context).size.width * 0.85,
@@ -53,35 +57,36 @@ Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
           ),
           ElevatedButton(
               onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  // showLoadingDialog(context);
-                  // userProvider.signIn(email.text, passWord.text);
-                  // usersProvider.getAllUsers();
-                  // Navigator.of(context).pop();
-                  // if (userProvider.logIn) {
-                  //   showCustomSnackBar(context, "Welcome ");
-                  //   switch (userProvider.user.accountType) {
-                  //     case AccountType.doctor:
-                  //       simpleNavigator(context, const DoctorsMain());
-                  //       break;
-                  //     case AccountType.nurse:
-                  //       simpleNavigator(context, const NurseMain());
-                  //       break;
-                  //     case AccountType.reception:
-                  //       simpleNavigator(context, const ReceptionMain());
-                  //       break;
-                  //   }
-                  // } else {
-                  //   showCustomSnackBar(context, "Failed to LogIn");
-                  // }
-
-                  if (text == "NURSE") {
-                    simpleNavigator(context, const NurseMain());
-                  } else if (text == "DOCTOR") {
-                    simpleNavigator(context, const DoctorsMain());
+                if (formKey.currentState!.validate() &&
+                    conn.status == ConnectivityStatus.online) {
+                  showLoadingDialog(context);
+                  bool res =
+                      await userProvider.signIn(email.text, passWord.text);
+                
+                  Navigator.of(context).pop();
+                  if (res) {
+                    print(
+                        "<------------------------------------------------------------>");
+                    switch (userProvider.user.accountType) {
+                      case AccountType.doctor:
+                        simpleNavigator(context, const DoctorsMain());
+                        break;
+                      case AccountType.nurse:
+                        simpleNavigator(context, const NurseMain());
+                        break;
+                      case AccountType.reception:
+                        simpleNavigator(context, const ReceptionMain());
+                        break;
+                      default:
+                        showCustomSnackBar(context, "Failed to LogIn");
+                        break;
+                    }
                   } else {
-                    simpleNavigator(context, const ReceptionMain());
+                    showCustomSnackBar(context, "Failed to LogIn");
                   }
+                }
+                if (conn.status == ConnectivityStatus.offline) {
+                  conn.showNetStatus();
                 }
               },
               child: const Text(
@@ -108,7 +113,12 @@ Widget getSignUp(
     List<String> options,
     TextEditingController selectedOption,
     void Function(String) callback) {
+  var conn = Provider.of<ConnectivityProvider>(context, listen: false);
+  conn.start(context);
   var userProvider = Provider.of<UserProvider>(context, listen: false);
+  var nursesProvider = Provider.of<NursesProvider>(context, listen: false);
+  var doctorsProvider = Provider.of<DoctorsProvider>(context, listen: false);
+  var patientsProvider = Provider.of<PatientsProvider>(context, listen: false);
   return Container(
     padding: const EdgeInsets.all(16),
     width: MediaQuery.of(context).size.width * 0.85,
@@ -170,7 +180,8 @@ Widget getSignUp(
           ),
           ElevatedButton(
               onPressed: () async {
-                if (formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate() &&
+                    conn.status == ConnectivityStatus.online) {
                   var newUser = User(
                     firstName: firstName.text,
                     lastName: secondName.text,
@@ -181,8 +192,13 @@ Widget getSignUp(
                   );
                   showLoadingDialog(context);
                   var result = await userProvider.signUp(newUser);
+                  nursesProvider.getAllNurses();
+                  doctorsProvider.getAllDoctors();
+                  patientsProvider.getAllPatients();
                   Navigator.of(context).pop();
                   if (result) {
+                    print(
+                        "<-------------------------------------------------------------------->");
                     print(userProvider.user.accountType);
                     switch (userProvider.user.accountType) {
                       case AccountType.doctor:
@@ -195,10 +211,12 @@ Widget getSignUp(
                         simpleNavigator(context, const ReceptionMain());
                         break;
                     }
-                    showCustomSnackBar(context, "Welcome");
                   } else {
                     showCustomSnackBar(context, "Failed To Register");
                   }
+                }
+                if (conn.status == ConnectivityStatus.offline) {
+                  conn.showNetStatus();
                 }
               },
               child: const Text(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hospital/components/loginComponents.dart';
+import 'package:hospital/provider/networkProvider.dart';
+import 'package:provider/provider.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -15,7 +17,7 @@ class _SignUpState extends State<SignUp> {
   final _profession = TextEditingController();
   final _email = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  List<String> options = ['DOCTOR', 'NURSE', 'RECEPTIONIST'];
+  List<String> options = ['Doctor', 'Nurse', 'Receptionist'];
   final selectedOption = TextEditingController();
   @override
   void initState() {
@@ -31,6 +33,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+  
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(

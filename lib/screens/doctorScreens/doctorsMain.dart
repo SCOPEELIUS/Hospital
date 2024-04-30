@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hospital/models/ward.dart';
+import 'package:hospital/provider/doctorsProvider.dart';
+import 'package:hospital/provider/networkProvider.dart';
+import 'package:hospital/provider/nursesProvider.dart';
+import 'package:hospital/provider/patientsProvider.dart';
+import 'package:hospital/provider/wardsProvider.dart';
 import 'package:hospital/screens/doctorScreens/doctorHome.dart';
 import 'package:hospital/screens/doctorScreens/doctorNurses.dart';
 import 'package:hospital/screens/doctorScreens/doctorPatients.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:provider/provider.dart';
 
 class DoctorsMain extends StatefulWidget {
   const DoctorsMain({super.key});
@@ -14,9 +21,32 @@ class DoctorsMain extends StatefulWidget {
 class _DoctorsMainState extends State<DoctorsMain>
     with TickerProviderStateMixin {
   bool theme = false;
-  late List<Widget> _widgets = [];
+  bool inits = false;
+  late final List<Widget> _widgets = [];
   int _currentPage = 0;
   late Widget _currentWidget;
+  Future<void> loadData() async {
+    var conn = Provider.of<ConnectivityProvider>(context, listen: true);
+    conn.start(context);
+    if (conn.status == ConnectivityStatus.online) {
+      var nursesProvider = Provider.of<NursesProvider>(context, listen: true);
+      var ward = Provider.of<WardProvider>(context, listen: true);
+      var patientsProvider =
+          Provider.of<PatientsProvider>(context, listen: true);
+      await nursesProvider.getAllNurses();
+      await patientsProvider.getAllPatients();
+      await ward.getAllWards();
+      inits = false;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (inits) {
+      loadData();
+    }
+  }
 
   @override
   void initState() {
@@ -25,8 +55,8 @@ class _DoctorsMainState extends State<DoctorsMain>
       ..add(const DoctorNurses())
       ..add(const DoctorPatients());
     super.initState();
-
     _currentWidget = _widgets[_currentPage];
+    inits = true;
   }
 
   void changePage(int value) {
@@ -38,6 +68,8 @@ class _DoctorsMainState extends State<DoctorsMain>
 
   @override
   Widget build(BuildContext context) {
+    var conn = Provider.of<ConnectivityProvider>(context, listen: false);
+    conn.start(context);
     return Scaffold(
       body: PopScope(
         canPop: false,

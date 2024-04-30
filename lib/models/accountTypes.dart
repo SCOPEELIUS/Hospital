@@ -1,5 +1,5 @@
 class AccountType {
-  static const String doctor = 'DOCTOR';
-  static const String nurse = 'NURSE';
-  static const String reception = 'RECEPTIONIST';
+  static const String doctor = 'Doctor';
+  static const String nurse = 'Nurse';
+  static const String reception = 'Receptionist';
 }

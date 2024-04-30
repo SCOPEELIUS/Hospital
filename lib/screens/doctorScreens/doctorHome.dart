@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hospital/components/componets.dart';
 import 'package:hospital/components/nfcComponents.dart';
+import 'package:hospital/provider/doctorsProvider.dart';
+import 'package:hospital/provider/nursesProvider.dart';
+import 'package:hospital/provider/patientsProvider.dart';
+import 'package:hospital/provider/userProvider.dart';
+import 'package:hospital/provider/wardsProvider.dart';
+import 'package:provider/provider.dart';
 
 class DoctorHome extends StatefulWidget {
   const DoctorHome({super.key});
@@ -28,6 +34,11 @@ class _DoctorHomeState extends State<DoctorHome> {
 
   @override
   Widget build(BuildContext context) {
+    var nursesProvider = Provider.of<NursesProvider>(context, listen: true);
+    var patientsProvider =
+        Provider.of<PatientsProvider>(context, listen: false);
+    var userProvider = Provider.of<UserProvider>(context, listen: true);
+    var ward = Provider.of<WardProvider>(context, listen: true);
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -76,7 +87,7 @@ class _DoctorHomeState extends State<DoctorHome> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               customContainer(Text(
-                "Elius Faustine",
+                userProvider.user.firstName ?? "",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 28,
@@ -85,44 +96,11 @@ class _DoctorHomeState extends State<DoctorHome> {
               customContainer(
                 Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "NUMBER OF PATIENTS ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.blue.shade800),
-                        ),
-                        const Text(
-                          "1300",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.deepPurple),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "NUMBER OF NURSES ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.blue.shade800),
-                        ),
-                        const Text(
-                          "125",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.deepPurple),
-                        )
-                      ],
-                    )
+                    rowData("NUMBER OF PATIENTS ",
+                        "${patientsProvider.patients.patients != null ? patientsProvider.patients.patients?.length : "0"}"),
+                    rowData("NUMBER OF NURSES",
+                        "${nursesProvider.nurses.users != null ? nursesProvider.nurses.users?.length : "0"}"),
+                    rowData("AVAILABLE WARDS", "${ward.wards.wards.length}"),
                   ],
                 ),
               ),

@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hospital/components/componets.dart';
+import 'package:hospital/components/indicators.dart';
+import 'package:hospital/components/navigators.dart';
 import 'package:hospital/components/nfcComponents.dart';
+import 'package:hospital/provider/doctorsProvider.dart';
+import 'package:hospital/provider/networkProvider.dart';
+import 'package:hospital/provider/nursesProvider.dart';
+import 'package:hospital/provider/patientProvider.dart';
+import 'package:hospital/provider/patientsProvider.dart';
+import 'package:hospital/provider/userProvider.dart';
+import 'package:hospital/provider/wardsProvider.dart';
+import 'package:hospital/subScreens/patientDetailsChange.dart';
+import 'package:provider/provider.dart';
 
 class NurseHome extends StatefulWidget {
   const NurseHome({super.key});
@@ -13,22 +24,53 @@ class NurseHome extends StatefulWidget {
 class _NurseHomeState extends State<NurseHome> {
   String data = "";
 
-  void functionCallback() async {
-    String dataa = await StartNFCReading();
-    setState(() {
-      data = dataa;
-    });
-    if (data == "Error") {
-      print("Dialog");
-      ShowNFCDialog(context, "Place Card First");
-    } else {
-      ShowNFCDialog(context, data);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    var nursesProvider = Provider.of<NursesProvider>(context, listen: true);
+    var patientsProvider = Provider.of<PatientsProvider>(context, listen: true);
+    var patientProvider = Provider.of<PatientProvider>(context, listen: true);
+    var userProvider = Provider.of<UserProvider>(context, listen: true);
+    var conn = Provider.of<ConnectivityProvider>(context, listen: true);
+    var ward = Provider.of<WardProvider>(context, listen: true);
+    conn.start(context);
     var size = MediaQuery.of(context).size;
+
+    void functionCallback() async {
+      String dataa = await StartNFCReading();
+      setState(() {
+        data = dataa;
+      });
+      if (data == "Error") {
+        showCustomSnackBar(context, "Place card first");
+      } else {
+        var res = patientsProvider.getPatientWithId(data);
+        if (res != null && res.carId != null) {
+          ShowNFCDialog(context, res.firstName ?? "");
+        } else {
+          ShowNFCDialog(context, "Un assigned card");
+        }
+      }
+    }
+
+    void functionUpdateCallback() async {
+      String dataa = await StartNFCReading();
+      setState(() {
+        data = dataa;
+      });
+      if (data == "Error") {
+        showCustomSnackBar(context, "Place card first");
+      } else if (!nursesProvider.available) {
+        showCustomSnackBar(context, "Wait a bit");
+      } else {
+        var res = patientsProvider.getPatientWithId(data);
+        if (res != null && res.carId != null) {
+          patientProvider.setPatient(res);
+          simpleNavigator(context, const PatientChaneDetails());
+        } else {
+          ShowNFCDialog(context, "Un assigned card");
+        }
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +117,7 @@ class _NurseHomeState extends State<NurseHome> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               customContainer(Text(
-                "Elius Faustine",
+                userProvider.user.firstName ?? "",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 28,
@@ -84,44 +126,11 @@ class _NurseHomeState extends State<NurseHome> {
               customContainer(
                 Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "NUMBER OF PATIENTS ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.blue.shade800),
-                        ),
-                        const Text(
-                          "1300",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.deepPurple),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "NUMBER OF NURSES ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.blue.shade800),
-                        ),
-                        const Text(
-                          "125",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.deepPurple),
-                        )
-                      ],
-                    )
+                    rowData("NUMBER OF PATIENTS",
+                        "${patientsProvider.patients.patients != null ? patientsProvider.patients.patients?.length : "0"}"),
+                    rowData("NUMBER OF NURSES",
+                        "${nursesProvider.nurses.users != null ? nursesProvider.nurses.users?.length : "0"}"),
+                    rowData("AVAILABLE WARDS", "${ward.wards.wards.length}"),
                   ],
                 ),
               ),
@@ -130,7 +139,7 @@ class _NurseHomeState extends State<NurseHome> {
                 children: [
                   getNfcReader(context, size, "SCAN CARD", functionCallback),
                   getNfcReader(context, size, "UPDATE PATIENT DETAILS",
-                      functionCallback),
+                      functionUpdateCallback),
                 ],
               ),
             ],

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hospital/components/loginComponents.dart';
+import 'package:hospital/provider/networkProvider.dart';
+import 'package:provider/provider.dart';
 
 class DoctorLogIn extends StatefulWidget {
   const DoctorLogIn({super.key});

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:hospital/provider/doctorsProvider.dart';
+import 'package:hospital/provider/networkProvider.dart';
+import 'package:hospital/provider/nursesProvider.dart';
+import 'package:hospital/provider/patientsProvider.dart';
+import 'package:hospital/provider/wardsProvider.dart';
 import 'package:hospital/screens/receptionistScreens/receptionDoctors.dart';
 import 'package:hospital/screens/receptionistScreens/receptionHome.dart';
 import 'package:hospital/screens/receptionistScreens/receptionNurses.dart';
 import 'package:hospital/screens/receptionistScreens/receptionPatients.dart';
+import 'package:provider/provider.dart';
 
 class ReceptionMain extends StatefulWidget {
   const ReceptionMain({super.key});
@@ -15,9 +21,35 @@ class ReceptionMain extends StatefulWidget {
 class _ReceptionMainState extends State<ReceptionMain>
     with TickerProviderStateMixin {
   bool theme = false;
+  bool inits = false;
   late final List<Widget> _widgets = [];
   int _currentPage = 0;
   late Widget _currentWidget;
+  Future<void> loadData() async {
+    var conn = Provider.of<ConnectivityProvider>(context, listen: true);
+    conn.start(context);
+    if (conn.status == ConnectivityStatus.online) {
+      var nursesProvider = Provider.of<NursesProvider>(context, listen: true);
+      var doctorsProvider = Provider.of<DoctorsProvider>(context, listen: true);
+      var ward = Provider.of<WardProvider>(context, listen: true);
+      var patientsProvider =
+          Provider.of<PatientsProvider>(context, listen: true);
+
+      await patientsProvider.getAllPatients();
+      await doctorsProvider.getAllDoctors();
+      await nursesProvider.getAllNurses();
+      await ward.getAllWards();
+      inits = false;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (inits) {
+      loadData();
+    }
+  }
 
   @override
   void initState() {
@@ -29,6 +61,7 @@ class _ReceptionMainState extends State<ReceptionMain>
     super.initState();
 
     _currentWidget = _widgets[_currentPage];
+    inits = true;
   }
 
   void changePage(int value) {
@@ -40,6 +73,8 @@ class _ReceptionMainState extends State<ReceptionMain>
 
   @override
   Widget build(BuildContext context) {
+    var conn = Provider.of<ConnectivityProvider>(context, listen: false);
+    conn.start(context);
     return Scaffold(
       body: PopScope(
         canPop: false,

@@ -97,3 +97,31 @@ Widget getTextForm(TextEditingController textController, String text) {
     },
   );
 }
+
+Widget getNumberForm(TextEditingController textController, String text) {
+  return TextFormField(
+    cursorColor: Colors.blue,
+    controller: textController,
+    keyboardType: TextInputType.number,
+    textAlign: TextAlign.start,
+    style: TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w500,
+      color: Colors.blue.withGreen(100),
+    ),
+    decoration: InputDecoration(
+      labelStyle: const TextStyle(
+          color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold),
+      enabledBorder: borderDeco,
+      labelText: text,
+      focusedBorder: focustBorder,
+    ),
+    validator: (value) {
+      if (value!.isEmpty) {
+        return 'Please Fill';
+      } else {
+        return null;
+      }
+    },
+  );
+}

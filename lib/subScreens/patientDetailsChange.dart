@@ -11,20 +11,20 @@ import 'package:hospital/provider/nursesProvider.dart';
 import 'package:hospital/provider/patientProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
 import 'package:provider/provider.dart';
-// import 'package:hospital/subScreens/patientDetails.dart';
 
-class PatientAdmittion extends StatefulWidget {
-  const PatientAdmittion({super.key});
+class PatientChaneDetails extends StatefulWidget {
+  const PatientChaneDetails({super.key});
 
   @override
-  State<PatientAdmittion> createState() => _PatientAdmittionState();
+  State<PatientChaneDetails> createState() => _PatientChaneDetailsState();
 }
 
-class _PatientAdmittionState extends State<PatientAdmittion> {
+class _PatientChaneDetailsState extends State<PatientChaneDetails> {
   final formKey = GlobalKey<FormState>();
   final firstName = TextEditingController();
   final secondName = TextEditingController();
   double op = 0.1;
+
   final age = TextEditingController();
   final cardId = TextEditingController();
   final nurseId = TextEditingController();
@@ -35,30 +35,57 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
   int index1 = 0;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    var patientProvider = Provider.of<PatientProvider>(context, listen: false);
+    var nursesProvider = Provider.of<NursesProvider>(context, listen: false);
+    var doctorsProvider = Provider.of<DoctorsProvider>(context, listen: false);
+    var patient = patientProvider.patient;
+    cardId.text = patient.carId ?? "SCAN CARD";
+    firstName.text = patient.firstName ?? "";
+    secondName.text = patient.secondName ?? "";
+    age.text = patient.age ?? "";
+    nurseId.text = patient.nurseId ?? "";
+    doctorId.text = patient.doctorId ?? "";
+    index1 = doctorsProvider.doctors.users != null
+        ? doctorsProvider.doctors.users!
+            .indexWhere((element) => element.id == doctorId.text)
+        : 0;
+    index = nursesProvider.nurses.users != null
+        ? nursesProvider.nurses.users!
+            .indexWhere((element) => element.email == nurseId.text)
+        : 0;
+
+    if (index == -1) {
+      index = 0;
+    }
+
+    if (index1 == -1) {
+      index1 = 0;
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
-
-    cardId.text = "SCAN CARD";
   }
 
   @override
   Widget build(BuildContext context) {
     var patientsProvider =
         Provider.of<PatientsProvider>(context, listen: false);
-    var patientset = PatientHttp();
+    var patientProvider = Provider.of<PatientProvider>(context, listen: false);
     var nursesProvider = Provider.of<NursesProvider>(context, listen: false);
     var doctorsProvider = Provider.of<DoctorsProvider>(context, listen: false);
     var conn = Provider.of<ConnectivityProvider>(context, listen: false);
     conn.start(context);
     var size = MediaQuery.of(context).size;
-    bool yes = doctorsProvider.doctors.users?.isNotEmpty ?? false;
-    bool yes1 = nursesProvider.nurses.users?.isNotEmpty ?? false;
+
     doctorSelectedOption.text =
-        yes ? doctorsProvider.doctors.users![index1].email ?? "" : "";
-    nurseSelectedOption.text =
-        yes1 ? nursesProvider.nurses.users![index].email ?? "" : "";
-    nurseId.text = yes1 ? nursesProvider.nurses.users![index].id ?? "" : "";
-    doctorId.text = yes ? doctorsProvider.doctors.users![index1].id ?? "" : "";
+        doctorsProvider.doctors.users![index1].email ?? "";
+    nurseSelectedOption.text = nursesProvider.nurses.users![index].email ?? "";
+    nurseId.text = nursesProvider.nurses.users?[index].id ?? "";
+    doctorId.text = doctorsProvider.doctors.users?[index1].id ?? "";
 
     void changeDropDown(String value) {
       setState(() {
@@ -132,7 +159,7 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "SELECT DOCTOR",
+                        "CHANGE DOCTOR",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 32,
@@ -150,7 +177,7 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "SELECT NURSE",
+                        "CHANGE NURSE",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 32,
@@ -164,45 +191,6 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
                     ],
                   ),
                   space,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        cardId.text,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 32,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          setState(() {
-                            op = 0.4;
-                          });
-                          var res = await StartNFCReading();
-                          setState(() {
-                            op = 0.1;
-                            cardId.text = res;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                        ),
-                        child: CircleAvatar(
-                          foregroundColor: Colors.red,
-                          backgroundImage: AssetImage("assets/35891.jpg"),
-                          radius: size.width * 0.1,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(op),
-                                shape: BoxShape.circle),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  space,
                   ElevatedButton(
                     onPressed: () async {
                       if (formKey.currentState!.validate() &&
@@ -212,41 +200,28 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
                           secondName: secondName.text,
                           age: age.text,
                           carId: cardId.text,
-                          nurseId: nurseId.text,
-                          doctorId: doctorId.text,
+                          nurseId: nurseSelectedOption.text,
+                          doctorId: doctorSelectedOption.text,
                         );
-                        bool res = false;
-                        if (cardId.text != "SCAN CARD" &&
-                            cardId.text != "Error") {
-                          var patResp =
-                              patientsProvider.getPatientWithId(cardId.text);
-                          if (patResp != null && patResp.carId != null) {
-                            showCustomSnackBar(context, "Card Used");
-                          } else {
-                            showLoadingDialog(context);
-                            res = await patientset.createPatient(patient);
+                        showLoadingDialog(context);
+                        patientProvider.setPatient(patient);
 
-                            Navigator.of(context).pop();
-                          }
-                        } else if (cardId.text == "SCAN CARD" ||
-                            cardId.text == "No Card") {
-                          showCustomSnackBar(context, "Scan Card First");
-                        } else {}
-
+                        bool res = await patientProvider.updatePatient();
+                        Navigator.of(context).pop();
                         if (res) {
-                          patientsProvider.patients.patients?.add(patient);
-                          showCustomSnackBar(context, "Patient admitted");
-                          Navigator.of(context).pop();
+                          patientsProvider.updatePatient(patient);
+                          showCustomSnackBar(context, "Patient updated");
                         } else {
                           showCustomSnackBar(
-                              context, "Failed to admit patient");
+                              context, "Failed to update Patient");
                         }
-                      } else if (conn.status == ConnectivityStatus.offline) {
+                        Navigator.of(context).pop();
+                      } else {
                         conn.showNetStatus();
                       }
                     },
                     child: const Text(
-                      "ADMIT",
+                      "UPDATE",
                       style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,

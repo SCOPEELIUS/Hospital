@@ -6,18 +6,23 @@ import 'package:hospital/models/responseModel.dart';
 
 import '../models/userModel.dart';
 
-class UsersProvider extends ChangeNotifier {
-  Users users = Users();
+class NursesProvider extends ChangeNotifier {
+  Users nurses = Users();
   final userHttp = UserHttp();
   bool available = false;
 
-  Future getAllUsers() async {
-    ApiResponse? resp = await userHttp.GetAll();
+  Future getAllNurses() async {
+    ApiResponse? resp = await userHttp.getAllNurses();
     print(resp?.body ?? "");
     if (resp != null && resp.success) {
-      users = Users.fromJsonList(resp.body);
+      nurses = Users.fromJsonList(resp.body);
       available = true;
       notifyListeners();
     }
+  }
+
+  User? getUserName(String email) {
+    return nurses.users
+        ?.firstWhere((nurse) => nurse.email == email, orElse: () => User());
   }
 }

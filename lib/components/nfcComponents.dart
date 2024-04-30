@@ -97,18 +97,11 @@ Future<void> ShowNFCDialog(BuildContext context, String data) async {
                 ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "CARD ID is : ${data} ",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                        fontSize: 18),
-                  ),
-                  Text(
-                    "PATIENT NAME IS: $data",
+                    data,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.blue,
