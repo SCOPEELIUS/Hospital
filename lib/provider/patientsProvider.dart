@@ -16,7 +16,6 @@ class PatientsProvider extends ChangeNotifier {
 
   Future getAllPatients() async {
     ApiResponse? resp = await patientHttp.getAllPatients();
-    print(resp?.body ?? "");
     if (resp != null && resp.success) {
       patients = Patients.fromJsonList(resp.body);
       available = true;
@@ -70,7 +69,6 @@ class PatientsProvider extends ChangeNotifier {
 
   Future getAllWards() async {
     ApiResponse? resp = await wardHttp.getAllWards();
-    print(resp?.body ?? "");
     if (resp != null && resp.success) {
       wards = Wards.fromJsonList(resp.body);
       available = true;

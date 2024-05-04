@@ -9,7 +9,6 @@ class PatientProvider extends ChangeNotifier {
 
   Future<bool> updatePatient() async {
     ApiResponse? resp = await patientHttp.updatePatient(patient);
-    print(resp?.body ?? "");
     if (resp != null && resp.success) {
       patient = Patient.fromJson(resp.body);
       notifyListeners();

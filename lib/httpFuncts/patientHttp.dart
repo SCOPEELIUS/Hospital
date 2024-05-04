@@ -13,12 +13,10 @@ class PatientHttp {
 
   Future<bool> createPatient(Patient patient) async {
     var body = jsonEncode(patient.toJson());
-    print(body);
     var url = Uri.parse("${baseUrl}register");
     try {
       var response = await client.post(url, headers: headers, body: body);
       if (response.statusCode == 200) {
-        print(response.body);
         var resp = ApiResponse.fromJson(jsonDecode(response.body));
         return resp.success;
       } else {
@@ -34,7 +32,6 @@ class PatientHttp {
     try {
       var response = await client.get(url, headers: headers);
       if (response.statusCode == 200) {
-        print(response.body);
         var resp = ApiResponse.fromJson(jsonDecode(response.body));
         return resp;
       } else {
@@ -47,12 +44,11 @@ class PatientHttp {
 
   Future<ApiResponse?> updatePatient(Patient patient) async {
     var body = jsonEncode(patient.toJson());
-    print(body);
+
     var url = Uri.parse("$baseUrl${patient.id}");
     try {
       var response = await client.patch(url, headers: headers, body: body);
       if (response.statusCode == 200) {
-        print(response.body);
         var resp = ApiResponse.fromJson(jsonDecode(response.body));
         return resp;
       } else {
@@ -68,7 +64,6 @@ class PatientHttp {
     try {
       final response = await client.delete(url);
       if (response.statusCode == 200) {
-        print(response.body);
         var resp = ApiResponse.fromJson(jsonDecode(response.body));
         return resp.success;
       } else {

@@ -62,11 +62,9 @@ Widget getLogin(String text, BuildContext context, GlobalKey<FormState> formKey,
                   showLoadingDialog(context);
                   bool res =
                       await userProvider.signIn(email.text, passWord.text);
-                
+
                   Navigator.of(context).pop();
                   if (res) {
-                    print(
-                        "<------------------------------------------------------------>");
                     switch (userProvider.user.accountType) {
                       case AccountType.doctor:
                         simpleNavigator(context, const DoctorsMain());
@@ -197,9 +195,6 @@ Widget getSignUp(
                   patientsProvider.getAllPatients();
                   Navigator.of(context).pop();
                   if (result) {
-                    print(
-                        "<-------------------------------------------------------------------->");
-                    print(userProvider.user.accountType);
                     switch (userProvider.user.accountType) {
                       case AccountType.doctor:
                         simpleNavigator(context, const DoctorsMain());

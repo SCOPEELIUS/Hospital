@@ -108,6 +108,8 @@ class _NursePatientsState extends State<NursePatients> {
                   children: [
                     TextButton(
                       onPressed: () {
+                        patientProvider.setPatient(
+                            patientsProvider.patients.patients![value]);
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const Patient()));
                       },

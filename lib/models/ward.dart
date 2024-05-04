@@ -1,10 +1,12 @@
 class Ward {
+  String? id;
   String? wardName;
   String? noOfbeds;
-  Ward({this.wardName, this.noOfbeds});
+  Ward({this.id, this.wardName, this.noOfbeds});
 
   factory Ward.fromJson(Map<String, dynamic> json) {
     return Ward(
+      id: json['_id'],
       wardName: json['wardNumber'] ?? "",
       noOfbeds: json['noBeds'].toString(),
     );
@@ -12,6 +14,7 @@ class Ward {
 
   Map<String, dynamic> toJson() {
     return {
+      '_id': id,
       'wardNumber': wardName,
       'noBeds': noOfbeds,
     };
@@ -27,6 +30,6 @@ class Wards {
   }
 
   List<Map<String, dynamic>> toJsonList() {
-    return wards!.map((ward) => ward.toJson()).toList();
+    return wards.map((ward) => ward.toJson()).toList();
   }
 }

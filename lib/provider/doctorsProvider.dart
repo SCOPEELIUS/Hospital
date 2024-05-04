@@ -10,7 +10,6 @@ class DoctorsProvider extends ChangeNotifier {
 
   Future getAllDoctors() async {
     ApiResponse? resp = await userHttp.getAllDoctors();
-    print(resp?.body ?? "");
     if (resp != null && resp.success) {
       doctors = Users.fromJsonList(resp.body);
       available = true;
@@ -21,5 +20,11 @@ class DoctorsProvider extends ChangeNotifier {
   User? getUserName(String email) {
     return doctors.users
         ?.firstWhere((doctor) => doctor.email == email, orElse: () => User());
+  }
+
+  String? getDoctorNameById(String id) {
+    var a = doctors.users
+        ?.firstWhere((doctor) => doctor.id == id, orElse: () => User());
+    return "${a?.firstName} ${a?.lastName}";
   }
 }

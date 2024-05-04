@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hospital/models/ward.dart';
-import 'package:hospital/provider/doctorsProvider.dart';
 import 'package:hospital/provider/networkProvider.dart';
 import 'package:hospital/provider/nursesProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
@@ -10,6 +8,8 @@ import 'package:hospital/screens/doctorScreens/doctorNurses.dart';
 import 'package:hospital/screens/doctorScreens/doctorPatients.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:hospital/httpFuncts/sockets.dart';
+import 'package:hospital/provider/userProvider.dart';
 
 class DoctorsMain extends StatefulWidget {
   const DoctorsMain({super.key});
@@ -21,22 +21,33 @@ class DoctorsMain extends StatefulWidget {
 class _DoctorsMainState extends State<DoctorsMain>
     with TickerProviderStateMixin {
   bool theme = false;
-  bool inits = false;
+  bool inits = true;
+  bool socketReload = true;
+  TCPClient tcpSocket = TCPClient();
   late final List<Widget> _widgets = [];
   int _currentPage = 0;
   late Widget _currentWidget;
   Future<void> loadData() async {
     var conn = Provider.of<ConnectivityProvider>(context, listen: true);
     conn.start(context);
-    if (conn.status == ConnectivityStatus.online) {
+    if (conn.status == ConnectivityStatus.online && inits) {
       var nursesProvider = Provider.of<NursesProvider>(context, listen: true);
       var ward = Provider.of<WardProvider>(context, listen: true);
       var patientsProvider =
           Provider.of<PatientsProvider>(context, listen: true);
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
       await nursesProvider.getAllNurses();
       await patientsProvider.getAllPatients();
       await ward.getAllWards();
-      inits = false;
+      if (socketReload == true) {
+        tcpSocket.connect(newId: userProvider.user.id ?? "");
+
+        socketReload = false;
+      }
+      setState(() {
+        inits = false;
+        socketReload = false;
+      });
     }
   }
 
@@ -56,7 +67,6 @@ class _DoctorsMainState extends State<DoctorsMain>
       ..add(const DoctorPatients());
     super.initState();
     _currentWidget = _widgets[_currentPage];
-    inits = true;
   }
 
   void changePage(int value) {

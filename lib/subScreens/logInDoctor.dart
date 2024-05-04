@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hospital/components/loginComponents.dart';
-import 'package:hospital/provider/networkProvider.dart';
-import 'package:provider/provider.dart';
 
 class DoctorLogIn extends StatefulWidget {
   const DoctorLogIn({super.key});
@@ -11,8 +9,8 @@ class DoctorLogIn extends StatefulWidget {
 }
 
 class _DoctorLogInState extends State<DoctorLogIn> {
-  var _passWord = TextEditingController();
-  var _email = TextEditingController();
+  final _passWord = TextEditingController();
+  final _email = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {

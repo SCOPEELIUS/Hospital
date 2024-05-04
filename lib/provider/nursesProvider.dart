@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hospital/httpFuncts/userHttp.dart';
 import 'package:hospital/models/responseModel.dart';
@@ -13,7 +11,6 @@ class NursesProvider extends ChangeNotifier {
 
   Future getAllNurses() async {
     ApiResponse? resp = await userHttp.getAllNurses();
-    print(resp?.body ?? "");
     if (resp != null && resp.success) {
       nurses = Users.fromJsonList(resp.body);
       available = true;
@@ -24,5 +21,11 @@ class NursesProvider extends ChangeNotifier {
   User? getUserName(String email) {
     return nurses.users
         ?.firstWhere((nurse) => nurse.email == email, orElse: () => User());
+  }
+
+  String? getNurseById(String id) {
+    var a = nurses.users
+        ?.firstWhere((nurse) => nurse.id == id, orElse: () => User());
+    return "${a?.firstName} ${a?.lastName}";
   }
 }

@@ -6,12 +6,14 @@ class User {
   String? password;
   String? speciality;
   String? accountType;
+  String? wardName;
 
   User({
     this.id,
     this.firstName,
     this.lastName,
     this.email,
+    this.wardName,
     this.password,
     this.speciality,
     this.accountType,
@@ -19,6 +21,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'],
+      wardName: json['wardNumber'],
       firstName: json['firstName'] ?? "",
       lastName: json['lastName'] ?? "",
       email: json['email'] ?? "",
@@ -34,6 +37,7 @@ class User {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'wardNumber': wardName,
       'password': password,
       'speciality': speciality,
       'accountType': accountType,

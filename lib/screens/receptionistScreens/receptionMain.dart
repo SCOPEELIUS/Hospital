@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:hospital/httpFuncts/sockets.dart';
 import 'package:hospital/provider/doctorsProvider.dart';
 import 'package:hospital/provider/networkProvider.dart';
 import 'package:hospital/provider/nursesProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
+import 'package:hospital/provider/userProvider.dart';
 import 'package:hospital/provider/wardsProvider.dart';
 import 'package:hospital/screens/receptionistScreens/receptionDoctors.dart';
 import 'package:hospital/screens/receptionistScreens/receptionHome.dart';
@@ -21,9 +23,11 @@ class ReceptionMain extends StatefulWidget {
 class _ReceptionMainState extends State<ReceptionMain>
     with TickerProviderStateMixin {
   bool theme = false;
-  bool inits = false;
+  bool socketReload = true;
+  bool inits = true;
   late final List<Widget> _widgets = [];
   int _currentPage = 0;
+  TCPClient tcpSocket = TCPClient();
   late Widget _currentWidget;
   Future<void> loadData() async {
     var conn = Provider.of<ConnectivityProvider>(context, listen: true);
@@ -34,12 +38,20 @@ class _ReceptionMainState extends State<ReceptionMain>
       var ward = Provider.of<WardProvider>(context, listen: true);
       var patientsProvider =
           Provider.of<PatientsProvider>(context, listen: true);
-
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
       await patientsProvider.getAllPatients();
       await doctorsProvider.getAllDoctors();
       await nursesProvider.getAllNurses();
       await ward.getAllWards();
-      inits = false;
+      if (socketReload == true) {
+        tcpSocket.connect(newId: userProvider.user.id ?? "");
+
+        socketReload = false;
+      }
+      setState(() {
+        socketReload = false;
+        inits = false;
+      });
     }
   }
 
@@ -61,7 +73,6 @@ class _ReceptionMainState extends State<ReceptionMain>
     super.initState();
 
     _currentWidget = _widgets[_currentPage];
-    inits = true;
   }
 
   void changePage(int value) {

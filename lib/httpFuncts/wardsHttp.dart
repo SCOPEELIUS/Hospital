@@ -15,13 +15,12 @@ class WardHttp {
 
   Future<bool> createWard(Ward ward) async {
     var body = jsonEncode(ward.toJson());
-    print(body);
+
     var url = Uri.parse("${baseUrl}register");
     try {
       var response = await client.post(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
-        print(response.body);
         var resp = ApiResponse.fromJson(jsonDecode(response.body));
         return resp.success;
       } else {
@@ -34,12 +33,15 @@ class WardHttp {
 
   Future<ApiResponse?> getAllWards() async {
     var url = Uri.parse("${baseUrl}all");
-    var response = await client.get(url, headers: headers);
-    if (response.statusCode == 200) {
-      print(response.body);
-      var resp = ApiResponse.fromJson(jsonDecode(response.body));
-      return resp;
-    } else {
+    try {
+      var response = await client.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        var resp = ApiResponse.fromJson(jsonDecode(response.body));
+        return resp;
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }

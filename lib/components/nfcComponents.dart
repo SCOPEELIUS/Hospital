@@ -56,14 +56,12 @@ void eraseCard() {
 }
 Future<String> StartNFCReading() async {
   try {
-    NFCTag tag = await FlutterNfcKit.poll(timeout: Duration(seconds: 2));
+    NFCTag tag = await FlutterNfcKit.poll(timeout: const Duration(seconds: 2));
     // Update the UI with tag ID or other tag information
-    print("The nfc tag is ${tag.id}");
 
     await FlutterNfcKit.finish();
     return tag.id;
   } catch (e) {
-    print('Error reading NFC: $e');
     await FlutterNfcKit.finish();
     return "Error";
   }
@@ -75,13 +73,13 @@ Future<void> ShowNFCDialog(BuildContext context, String data) async {
       builder: (context) => Dialog(
             elevation: 10,
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: const BorderRadius.all(
+                borderRadius: BorderRadius.all(
                   Radius.circular(30),
                 ),
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
                       offset: Offset(-2, -2),
                       spreadRadius: -2,
@@ -112,7 +110,7 @@ Future<void> ShowNFCDialog(BuildContext context, String data) async {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("Close")),
+                        child: const Text("Close")),
                   ),
                 ],
               ),

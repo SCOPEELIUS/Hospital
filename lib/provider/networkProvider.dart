@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
@@ -27,12 +25,11 @@ class ConnectivityProvider extends ChangeNotifier {
     _connectivity.onConnectivityChanged.listen((result) {
       if (result.contains(ConnectivityResult.none)) {
         _status = ConnectivityStatus.offline;
-        notifyListeners();
-        showNetStatus();
       } else {
-        _status = ConnectivityStatus.online;
-        notifyListeners();
+        _status = ConnectivityStatus.online;    
       }
+      notifyListeners();
+        showNetStatus();
     });
   }
 

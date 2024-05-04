@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hospital/components/componets.dart';
 import 'package:hospital/components/nfcComponents.dart';
-import 'package:hospital/provider/doctorsProvider.dart';
 import 'package:hospital/provider/nursesProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
 import 'package:hospital/provider/userProvider.dart';
@@ -25,7 +24,7 @@ class _DoctorHomeState extends State<DoctorHome> {
       data = dataa;
     });
     if (data == "Error") {
-      print("Dialog");
+   
       ShowNFCDialog(context, "Place Card First");
     } else {
       ShowNFCDialog(context, data);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hospital/provider/doctorsProvider.dart';
 import 'package:hospital/provider/networkProvider.dart';
+import 'package:hospital/provider/notificationController.dart';
 import 'package:hospital/provider/patientProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
 import 'package:hospital/provider/userProvider.dart';
@@ -11,15 +12,60 @@ import 'package:hospital/subScreens/logInDoctor.dart';
 import 'package:hospital/subScreens/logInReception.dart';
 import 'package:hospital/subScreens/signUp.dart';
 import 'package:provider/provider.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: "Hospital",
+        channelName: "Hospital",
+        channelDescription: "Emergency notification",
+        defaultColor: Colors.blue,
+        ledColor: Colors.blue,
+      ),
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+        channelGroupKey: "basic_channel_group",
+        channelGroupName: "Past notifications",
+      ),
+    ],
+  );
+
+  bool isNotificationsAllowed =
+      await AwesomeNotifications().isNotificationAllowed();
+
+  if (!isNotificationsAllowed) {
+    AwesomeNotifications().requestPermissionToSendNotifications();
+  }
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: NotificationController.onActionRecievedMethod,
+      onNotificationCreatedMethod:
+          NotificationController.onNotificationCreatedMethod,
+      onNotificationDisplayedMethod:
+          NotificationController.onNotificationDisplayedMethod,
+      onDismissActionReceivedMethod:
+          NotificationController.onDismissActionRecievedMethod,
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

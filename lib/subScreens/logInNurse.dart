@@ -9,8 +9,8 @@ class NurseLogIn extends StatefulWidget {
 }
 
 class _NurseLogInState extends State<NurseLogIn> {
-  var _passWord = TextEditingController();
-  var _email = TextEditingController();
+  final _passWord = TextEditingController();
+  final _email = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -19,8 +19,8 @@ class _NurseLogInState extends State<NurseLogIn> {
       body: Container(
         alignment: Alignment.center,
         height: MediaQuery.of(context).orientation == Orientation.landscape
-              ? size.height * 1.3
-              : size.height,
+            ? size.height * 1.3
+            : size.height,
         width: size.width,
         decoration: const BoxDecoration(
           image: DecorationImage(

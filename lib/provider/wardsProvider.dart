@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hospital/httpFuncts/userHttp.dart';
 import 'package:hospital/httpFuncts/wardsHttp.dart';
 import 'package:hospital/models/responseModel.dart';
 import 'package:hospital/models/ward.dart';
@@ -11,11 +10,10 @@ class WardProvider extends ChangeNotifier {
 
   Future getAllWards() async {
     ApiResponse? resp = await wardHttp.getAllWards();
-    print(resp?.body ?? "");
     if (resp != null && resp.success) {
       wards = Wards.fromJsonList(resp.body);
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   Future<bool> createWard(Ward wardnew) async {
@@ -28,5 +26,10 @@ class WardProvider extends ChangeNotifier {
       return resp;
     }
     return resp;
+  }
+
+  Ward? getWardFromId(String id) {
+    return wards.wards
+        .firstWhere((nurse) => nurse.id == id, orElse: () => Ward());
   }
 }

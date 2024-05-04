@@ -10,6 +10,7 @@ import 'package:hospital/provider/networkProvider.dart';
 import 'package:hospital/provider/nursesProvider.dart';
 import 'package:hospital/provider/patientProvider.dart';
 import 'package:hospital/provider/patientsProvider.dart';
+import 'package:hospital/provider/wardsProvider.dart';
 import 'package:provider/provider.dart';
 // import 'package:hospital/subScreens/patientDetails.dart';
 
@@ -31,8 +32,10 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
   final doctorId = TextEditingController();
   final doctorSelectedOption = TextEditingController();
   final nurseSelectedOption = TextEditingController();
+  final wardSelectedOption = TextEditingController();
   int index = 0;
   int index1 = 0;
+  int index2 = 0;
 
   @override
   void initState() {
@@ -48,13 +51,16 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
     var patientset = PatientHttp();
     var nursesProvider = Provider.of<NursesProvider>(context, listen: false);
     var doctorsProvider = Provider.of<DoctorsProvider>(context, listen: false);
+    var wards = Provider.of<WardProvider>(context, listen: false);
     var conn = Provider.of<ConnectivityProvider>(context, listen: false);
     conn.start(context);
     var size = MediaQuery.of(context).size;
     bool yes = doctorsProvider.doctors.users?.isNotEmpty ?? false;
     bool yes1 = nursesProvider.nurses.users?.isNotEmpty ?? false;
+    bool yes2 = wards.wards.wards.isNotEmpty;
     doctorSelectedOption.text =
         yes ? doctorsProvider.doctors.users![index1].email ?? "" : "";
+    wardSelectedOption.text = yes2 ? wards.wards.wards[index2].id ?? "" : "";
     nurseSelectedOption.text =
         yes1 ? nursesProvider.nurses.users![index].email ?? "" : "";
     nurseId.text = yes1 ? nursesProvider.nurses.users![index].id ?? "" : "";
@@ -75,6 +81,14 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
             .indexWhere((element) => element.email == value);
         index1 = ue;
         doctorSelectedOption.text = value;
+      });
+    }
+
+    void changeDropDown3(String value) {
+      setState(() {
+        var ue = wards.wards.wards.indexWhere((element) => element.id == value);
+        index2 = ue;
+        wardSelectedOption.text = value;
       });
     }
 
@@ -167,6 +181,22 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const Text(
+                        "SELECT WARD",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 32,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      getDropDownWards(wards.wards.wards, wardSelectedOption,
+                          changeDropDown3),
+                    ],
+                  ),
+                  space,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Text(
                         cardId.text,
                         style: const TextStyle(
@@ -187,11 +217,11 @@ class _PatientAdmittionState extends State<PatientAdmittion> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
+                          shape:const CircleBorder(),
                         ),
                         child: CircleAvatar(
                           foregroundColor: Colors.red,
-                          backgroundImage: AssetImage("assets/35891.jpg"),
+                          backgroundImage:const AssetImage("assets/35891.jpg"),
                           radius: size.width * 0.1,
                           child: Container(
                             decoration: BoxDecoration(

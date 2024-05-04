@@ -14,12 +14,11 @@ class UserHttp {
 
   Future<bool> createUser(User user) async {
     var body = jsonEncode(user.toJson());
-    print(body);
+
     var url = Uri.parse("${baseUrl}register");
     var response = await Client.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      print(response.body);
       var resp = ApiResponse.fromJson(jsonDecode(response.body));
       return resp.success;
     } else {
@@ -29,15 +28,14 @@ class UserHttp {
 
   Future<ApiResponse?> logIn(User user) async {
     var body = jsonEncode(user.toJson());
-    print(body);
+
     var url = Uri.parse("${baseUrl}login");
     var response = await Client.post(url, headers: headers, body: body);
-    print(response.body);
+
     if (response.statusCode == 200) {
       var resp = ApiResponse.fromJson(jsonDecode(response.body));
       return resp;
     } else {
-      print("Failed");
       return null;
     }
   }
@@ -46,7 +44,6 @@ class UserHttp {
     var url = Uri.parse("${baseUrl}all");
     var response = await Client.get(url, headers: headers);
     if (response.statusCode == 200) {
-      print(response.body);
       var resp = ApiResponse.fromJson(jsonDecode(response.body));
       return resp;
     } else {
@@ -56,24 +53,30 @@ class UserHttp {
 
   Future<ApiResponse?> getAllNurses() async {
     var url = Uri.parse("${baseUrl}specific/Nurse");
-    var response = await Client.get(url, headers: headers);
-    if (response.statusCode == 200) {
-      print(response.body);
-      var resp = ApiResponse.fromJson(jsonDecode(response.body));
-      return resp;
-    } else {
+    try {
+      var response = await Client.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        var resp = ApiResponse.fromJson(jsonDecode(response.body));
+        return resp;
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }
 
   Future<ApiResponse?> getAllDoctors() async {
     var url = Uri.parse("${baseUrl}specific/Doctor");
-    var response = await Client.get(url, headers: headers);
-    if (response.statusCode == 200) {
-      print(response.body);
-      var resp = ApiResponse.fromJson(jsonDecode(response.body));
-      return resp;
-    } else {
+    try {
+      var response = await Client.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        var resp = ApiResponse.fromJson(jsonDecode(response.body));
+        return resp;
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }
